@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6, // Minimum length for password
-    maxlength: 20 // Maximum length for password
+    maxlength: 200 // Maximum length for password
   },
   isAdmin: {
     type: Boolean,
