@@ -1,8 +1,19 @@
 import React from "react";
-import {Link} from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux";
+import {Link, useNavigate} from "react-router-dom"
+import { logout } from "../redux/authSlice";
 
 
 const Header = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { products } = useSelector((state) => state.cart);
+  //logout
+  const handleLogout = ()=>{
+    dispatch(logout())
+    navigate("/login")
+  }
+
   return (
     <div className="">
       <nav className="relative flex items-center justify-between sm:h-10 md:justify-center py-6 px-4 mt-2">
@@ -42,7 +53,7 @@ const Header = () => {
         </div>
         <div className="hidden md:flex md:space-x-10">
           <a
-            href="/home"
+            href="/"
             className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
           >
             Home
@@ -87,16 +98,16 @@ const Header = () => {
               to="/cart"
               className="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
             >
-              Cart
+              Cart ({products.length})
             </Link>
           </span>
           <span className="inline-flex">
-            <a
-              href="/login"
+            <button
               className="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
+              onClick={handleLogout}
             >
               Logout
-            </a>
+            </button>
           </span>
           <span className="inline-flex rounded-md shadow ml-2">
             <a

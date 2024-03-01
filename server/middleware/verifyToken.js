@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken";
 //verifyToken
 export const verifyToken = (req, res, next) => {
   if (!req.headers.authorization)
-    return res.status(403).json({ msg: "Not authorizated No token" });
+    return res.status(403).json({ msg: "Not authorized. No token" });
 
   if (
     req.headers.authorization &&
-    req.headers.authorization.startwith("Bearer ")
+    req.headers.authorization.startsWith("Bearer ")
   ) {
-    const token = req.header.split(" ")[1];
+    const token = req.headers.authorization.split(" ")[1];
     jwt.verify(token, "14326wasay14326", (err, data) => {
       if (err) return res.status(403).json({ msg: "Wrong/expire token" });
       else {
@@ -17,19 +17,21 @@ export const verifyToken = (req, res, next) => {
         next();
       }
     });
+  } else {
+    return res.status(403).json({ msg: "Invalid token format" });
   }
 };
 
 //verifyToken Admin
 export const verifyTokenAdmin = (req, res, next) => {
   if (!req.headers.authorization)
-    return res.status(403).json({ msg: "Not authorizated No token" });
+    return res.status(403).json({ msg: "Not authorized. No token" });
 
   if (
     req.headers.authorization &&
-    req.headers.authorization.startwith("Bearer ")
+    req.headers.authorization.startsWith("Bearer ")
   ) {
-    const token = req.header.split(" ")[1];
+    const token = req.headers.authorization.split(" ")[1];
     jwt.verify(token, "14326wasay14326", (err, data) => {
       if (err) return res.status(403).json({ msg: "Wrong/expire token" });
       else {
@@ -39,5 +41,7 @@ export const verifyTokenAdmin = (req, res, next) => {
         next();
       }
     });
+  } else {
+    return res.status(403).json({ msg: "Invalid token format" });
   }
 };

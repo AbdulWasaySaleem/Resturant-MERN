@@ -1,6 +1,6 @@
 //for image uplaods
 import express from "express";
-import { verifyToken } from "../middleware/verifyToken";
+import { verifyToken } from "../middleware/verifyToken.js";
 import multer from "multer";
 
 const router = express.Router();
