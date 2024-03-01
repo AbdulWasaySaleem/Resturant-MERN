@@ -1,18 +1,23 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {Link, useNavigate} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice";
 
+import { CgProfile } from "react-icons/cg";
 
 const Header = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { products } = useSelector((state) => state.cart);
+
+  const user = useSelector(state =>state.auth.user)
+  console.log(user?.isAdmin)
+
   //logout
-  const handleLogout = ()=>{
-    dispatch(logout())
-    navigate("/login")
-  }
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
 
   return (
     <div className="">
@@ -77,20 +82,24 @@ const Header = () => {
           >
             FAQ
           </a>
-          <Link
-            to="/create"
-            className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
-          >
-            Create
-          </Link>
+          {user?.isAdmin ? (
+            <Link
+              to="/create"
+              className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
+            >
+              Create
+            </Link>
+          ) : (
+            <p></p>
+          )}
         </div>
         <div className="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
           <span className="inline-flex">
             <a
-              href="/login"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
+              href="/profile"
+              className="inline-flex items-center px-4 py-2 text-base font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
             >
-              Profile
+              <CgProfile />
             </a>
           </span>
           <span className="inline-flex">
@@ -108,14 +117,6 @@ const Header = () => {
             >
               Logout
             </button>
-          </span>
-          <span className="inline-flex rounded-md shadow ml-2">
-            <a
-              href="/signup"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out"
-            >
-              Get started
-            </a>
           </span>
         </div>
       </nav>
