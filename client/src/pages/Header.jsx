@@ -2,18 +2,16 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice";
-
 import { CgProfile } from "react-icons/cg";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.auth.user);
+  const isAuthenticated = user !== null;
 
-  const user = useSelector(state =>state.auth.user)
-  console.log(user?.isAdmin)
-
-  //logout
+  // Logout
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
@@ -22,15 +20,17 @@ const Header = () => {
   return (
     <div className="">
       <nav className="relative flex items-center justify-between sm:h-10 md:justify-center py-6 px-4 mt-2">
+        {/* Left side of the header */}
         <div className="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
+          {/* Logo */}
           <div className="flex items-center justify-between w-full md:w-auto">
-            <a href aria-label="Home">
+       
               <img
                 src="https://www.svgrepo.com/show/491978/gas-costs.svg"
                 height={40}
                 width={40}
               />
-            </a>
+          
             <div className="-mr-2 flex items-center md:hidden">
               <button
                 type="button"
@@ -56,52 +56,46 @@ const Header = () => {
             </div>
           </div>
         </div>
+        {/* Center of the header */}
         <div className="hidden md:flex md:space-x-10">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
           >
             Home
-          </a>
-          <a
-            href="/contact"
+          </Link>
+          <Link
+            to="/contact"
             className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
           >
             Contact
-          </a>
-          <a
-            href="/foods"
+          </Link>
+          <Link
+            to="/foods"
             className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
           >
             Foods
-          </a>
-          <a
-            href="https://docs.pingping.io"
-            target="_blank"
+          </Link>
+          <Link
+            to="/faq"
             className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
           >
             FAQ
-          </a>
-          {user?.isAdmin ? (
+          </Link>
+
+          {user?.isAdmin && (
             <Link
-              to="/create"
+              to="/adminpanel"
               className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
             >
-              Create
+              Admin
             </Link>
-          ) : (
-            <p></p>
           )}
         </div>
+
+        {/* Right side of the header */}
+
         <div className="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
-          <span className="inline-flex">
-            <a
-              href="/profile"
-              className="inline-flex items-center px-4 py-2 text-base font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
-            >
-              <CgProfile />
-            </a>
-          </span>
           <span className="inline-flex">
             <Link
               to="/cart"
@@ -109,14 +103,32 @@ const Header = () => {
             >
               Cart ({products.length})
             </Link>
-          </span>
-          <span className="inline-flex">
-            <button
-              className="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            {/* Render profile icon or login link based on authentication status */}
+            {isAuthenticated ? (
+              <>
+                <button
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="inline-flex items-center px-4 py-2 text-base font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center px-4 py-2 text-base font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
+                >
+                  Signup
+                </Link>
+              </>
+            )}
           </span>
         </div>
       </nav>

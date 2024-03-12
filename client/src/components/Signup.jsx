@@ -8,6 +8,7 @@ const Signup = () => {
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [address, setAddress] = useState("")
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -20,7 +21,7 @@ const Signup = () => {
         'Content-Type': 'application/json'
       },
       method: "POST",
-      body: JSON.stringify({username, email,password})
+      body: JSON.stringify({username, email,password, address})
     })
 
     const data = await res.json()
@@ -39,8 +40,8 @@ const Signup = () => {
         <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
         <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
-              Email
+            <label className="block text-gray-700 font-bold mb-2" >
+              Username
             </label>
             <input
               type="text"
@@ -77,6 +78,20 @@ const Signup = () => {
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="password">
+              Address
+            </label>
+            <input
+              type="text"
+              id="text"
+              className="border rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
+              placeholder="Enter your address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
               required
             />
           </div>

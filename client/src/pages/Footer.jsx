@@ -3,7 +3,7 @@ import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 py-4 text-white text-center">
+    <footer className="bg-gray-800 py-4 text-white text-center mt-auto">
       <div className="flex justify-center items-center space-x-4">
         <a href="https://www.facebook.com" className="text-xl">
           <FaFacebook />

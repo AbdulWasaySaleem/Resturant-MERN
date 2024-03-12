@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from 'react-scroll';
+import image from "../../public/images/Fastfood.jpg"
 
 const Hero = () => {
   return (
@@ -26,7 +27,7 @@ const Hero = () => {
         </div>
         <div className="hidden md:flex md:w-1/2 justify-center md:justify-end mt-8 md:mt-0">
           <img
-            src="https://loremflickr.com/g/600/600/girl"
+            src={image}
             alt="Illustration"
             className="w-full md:max-w-md rounded-lg shadow-lg"
           />

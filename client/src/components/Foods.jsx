@@ -1,5 +1,5 @@
 import React from 'react';
-import { foodTypes } from '../data/data';
+import { foodTypes } from '../data/data.js';
 import { Link } from 'react-router-dom';
 
 const Foods = () => {

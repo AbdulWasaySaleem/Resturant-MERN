@@ -10,8 +10,6 @@ const FoodDetails = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
-  const { products } = useSelector((state) => state.cart);
-  console.log(products)
 
   useEffect(() => {
     const fetchFoodDetails = async () => {
@@ -47,78 +45,73 @@ const FoodDetails = () => {
   };
 
   return (
-    <div className="bg-gray-200 py-8 h-[750px]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row -mx-4 border border-black rounded border-solid items-center">
-          <div className="md:flex-1 px-4 border-r-0 md:border-r-2 border-black">
-            <div className="h-[460px] md:h-auto rounded-lg mb-4 flex justify-center items-center my-auto">
+    <div className="flex flex-col bg-gray-50">
+      <div className="flex-grow py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row -mx-4 border border-black rounded items-center">
+            <div className="md:flex-1 px-4">
+              <div className="h-[460px] md:h-auto rounded-lg mb-4 flex justify-center items-center my-auto">
+                {foodDetails && (
+                  <img
+                    className="max-w-full max-h-full object-cover mt-3"
+                    src={`http://localhost:3000/pictures/${foodDetails.img}`}
+                    alt="Product Image"
+                  />
+                )}
+              </div>
+            </div>
+            <div className="md:flex-1 px-4">
               {foodDetails && (
-                <img
-                  className="max-w-full max-h-full object-cover"
-                  src={`http://localhost:3000/pictures/${foodDetails.img}`}
-                  alt="Product Image"
-                />
+                <>
+                  <h2 className="text-2xl font-bold text-black mb-2">
+                    {foodDetails.title}
+                  </h2>
+                  <p className="text-black text-sm mb-2">
+                    Review: {foodDetails.review}/5
+                  </p>
+                  <div className="flex items-center mb-4">
+                    <div className="mr-4">
+                      <span className="font-bold text-black">Price: </span>
+                      <span className="text-gray-800">
+                        ${foodDetails?.price * quantity}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <button
+                        onClick={() => changeQuantity("dec")}
+                        className="bg-blue-500 text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-blue-600"
+                      >
+                        -
+                      </button>
+                      <span className="text-black">{quantity}</span>
+                      <button
+                        onClick={() => changeQuantity("inc")}
+                        className="bg-blue-500 text-white py-2 px-4 rounded-full font-bold ml-2 hover:bg-blue-600"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="font-bold text-black">
+                      Product Description:
+                    </span>
+                    <p className="text-black text-sm mt-2">
+                      {foodDetails.description}
+                    </p>
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      onClick={addToCart}
+                      className="bg-blue-500 text-white py-2 px-4 rounded-full font-bold hover:bg-blue-600 w-full"
+                    >
+                      Add To Cart
+                    </button>
+                  </div>
+                </>
               )}
             </div>
-          </div>
-          <div className="md:flex-1 px-4">
-            {foodDetails && (
-              <>
-                <h2 className="text-2xl font-bold text-black mb-2">
-                  {foodDetails.title}
-                </h2>
-                <p className="text-black text-sm mb-4">
-                  {foodDetails.description}
-                </p>
-                <div className="flex items-center mb-4">
-                  <div className="mr-4">
-                    <span className="font-bold text-black">Price: </span>
-                    <span className="text-gray-800">
-                      ${foodDetails?.price * quantity}
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => changeQuantity("dec")}
-                      className="bg-blue-500 text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-blue-600"
-                    >
-                      -
-                    </button>
-                    <span className="text-black">{quantity}</span>
-                    <button
-                      onClick={() => changeQuantity("inc")}
-                      className="bg-blue-500 text-white py-2 px-4 rounded-full font-bold ml-2 hover:bg-blue-600"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <span className="font-bold text-black">
-                    Product Description:
-                  </span>
-                  <p className="text-black text-sm mt-2">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    sed ante justo. Integer euismod libero id mauris malesuada
-                    tincidunt. Vivamus commodo nulla ut lorem rhoncus aliquet.
-                    Duis dapibus augue vel ipsum pretium, et venenatis sem
-                    blandit. Quisque ut erat vitae nisi ultrices placerat non
-                    eget velit. Integer ornare mi sed ipsum lacinia, non
-                    sagittis mauris blandit. Morbi fermentum libero vel nisl
-                    suscipit, nec tincidunt mi consectetur.
-                  </p>
-                </div>
-                <div className="m-2">
-                  <button
-                    onClick={addToCart}
-                    className="bg-blue-500 text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-blue-600 w-full"
-                  >
-                    Add To Cart
-                  </button>
-                </div>
-              </>
-            )}
           </div>
         </div>
       </div>

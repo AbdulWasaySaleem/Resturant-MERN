@@ -18,6 +18,12 @@ const userSchema = new mongoose.Schema({
     minlength: 6, // Minimum length for password
     maxlength: 200 // Maximum length for password
   },
+  address:{
+    type: String,
+    required: true,
+    minlength: 3, // Minimum length for password
+    maxlength: 200 // Maximum length for password
+  },
   isAdmin: {
     type: Boolean,
     default: false // Default value for isAdmin is false
