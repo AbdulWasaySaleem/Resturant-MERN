@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
 import HomeAdmin from "./HomeAdmin";
 import Test from "./Test";
+
 
 const MainAdmin = () => {
   const [activeComponent, setActiveComponent] = useState("home");
@@ -56,6 +56,7 @@ const MainAdmin = () => {
           {renderComponent()}
         </div>
       </div>
+
     </>
   );
 };

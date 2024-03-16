@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRoute from "./route/authRoute.js"
 import productRoute from "./route/productRoute.js"
 import imageRoute from "./route/uploadRoute.js"
+import orderRoute from "./route/orderRoute.js"
 
 // Load environment variables from .env file
 dotenv.config();
@@ -22,6 +23,7 @@ app.use("/pictures", express.static('public/images'))
 app.use("/auth", authRoute)
 app.use("/products", productRoute)
 app.use("/images", imageRoute)
+app.use('/order', orderRoute)
 
 // Connect to MongoDB database
 mongoose

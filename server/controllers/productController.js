@@ -11,7 +11,6 @@ export const getAllProductController = async (req, res) => {
 };
 
 //get one product bassis of id
-
 export const getOneProductController = async (req, res) => {
   try {
     const productId = req.params.id;
@@ -67,7 +66,7 @@ export const updateProductController = async (req, res) => {
   }
 };
 
-//deleet 
+//delete 
 export const deleteProductController = async (req, res) => {
   try {
     const productId = req.params.id;

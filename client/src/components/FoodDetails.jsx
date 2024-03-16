@@ -3,13 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addProduct } from "../redux/cartSlice";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const FoodDetails = () => {
   const [foodDetails, setFoodDetails] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
-  const dispatch = useDispatch();
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchFoodDetails = async () => {
@@ -41,10 +44,12 @@ const FoodDetails = () => {
   };
 
   const addToCart = () => {
+    toast.info("Item added to the cart...")
     dispatch(addProduct({ ...foodDetails, quantity }));
   };
 
   return (
+    <>
     <div className="flex flex-col bg-gray-50">
       <div className="flex-grow py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -116,6 +121,8 @@ const FoodDetails = () => {
         </div>
       </div>
     </div>
+    <ToastContainer/>
+    </>
   );
 };
 

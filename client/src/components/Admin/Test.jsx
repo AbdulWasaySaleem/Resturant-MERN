@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Test = () => {
   const [title, setTitle] = useState("");
@@ -68,7 +69,8 @@ const Test = () => {
       );
 
       console.log("food:", response.data);
-      navigate(`/admin`);
+      toast("Post created successfully...")
+      navigate(`/adminpanel`);
     } catch (error) {
       console.error("Error with Create", error.message);
     }
@@ -168,8 +170,9 @@ const Test = () => {
                   type="submit"
                   className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
                   onClick={() => {
-                    navigate("/test");
-                    window.location.reload();
+                    handleCreateProduct()
+                    // navigate("/test");
+                    // window.location.reload();
                   }}
                 >
                   Submit
@@ -177,9 +180,10 @@ const Test = () => {
               </div>
             </form>
           </div>
-          <button onClick={()=>{navigate('/admin')}} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Go back to admin panel</button>
+          <button onClick={()=>{navigate('/adminpanel')}} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Go back to admin panel</button>
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 };

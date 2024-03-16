@@ -2,6 +2,7 @@ import User from "../Model/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+//register controller
 export const registerController = async (req, res) => {
   try {
     // Check if user already exists
@@ -48,7 +49,7 @@ export const registerController = async (req, res) => {
     });
   }
 };
-
+//login controller
 export const loginController = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });

@@ -15,7 +15,7 @@ const Footer = () => {
           <FaTwitter />
         </a>
       </div>
-      <p className="mt-4">All rights reserved BytesSync Studios &copy; 2022-2024</p>
+      <p className="mt-4">All rights reserved @abdulWasay &copy; 2022-2024</p>
     </footer>
   );
 };

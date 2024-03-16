@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeProduct, clearCart } from "../redux/cartSlice.js";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Cart = () => {
+  const [orderId, setOrderId] = useState("");
   const { products } = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.auth.user);
+  //console.log(user.email);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const user = useSelector((state) => state.auth.user);
-  console.log(user);
 
   let totalPrice = 0;
   products.forEach(
@@ -20,9 +22,32 @@ const Cart = () => {
     dispatch(removeProduct({ _id: id }));
   };
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
+    const orderData = {
+      userId: user._id,
+      userEmail: user?.email,
+      products: products.map((product) => ({
+        productId: product._id, 
+        quantity: product.quantity,
+        title: product.title,
+        price: product.price,
+        category: product.category,
+      })),
+    };
+    //console.log(orderData);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/order/yourorders",
+        orderData
+      );
+      //console.log(response.data);
+      setOrderId(response.data.orderId);
+    } catch (error) {
+      console.error("Error placing order:", error.message);
+    }
+
     if (products.length > 0) {
-      dispatch(clearCart());
+      //dispatch(clearCart());
       navigate("/checkout");
     }
   };
