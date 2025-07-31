@@ -2,24 +2,32 @@ import React from 'react';
 
 const Contact = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-6">Contact Us</h1>
-      <div className="max-w-lg mx-auto bg-white rounded-lg shadow-md p-6">
-        <form>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">Name</label>
-            <input type="text" id="name" name="name" className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your name" />
+    <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen py-12 px-4">
+      <div className="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8 border border-purple-100">
+        <h1 className="text-3xl font-bold text-center text-purple-700 mb-6">
+          Contact Us
+        </h1>
+        <form className="space-y-5">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
           </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-            <input type="email" id="email" name="email" className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your email" />
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
           </div>
-          <div className="mb-6">
-            <label htmlFor="message" className="block text-gray-700 text-sm font-bold mb-2">Message</label>
-            <textarea id="message" name="message" rows="4" className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your message"></textarea>
+          <div>
+            <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
+            <textarea id="message" name="message" rows="4" placeholder="Enter your message"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
           </div>
-          <div className="flex justify-center">
-            <button type="submit" className="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Submit</button>
+          <div className="text-center">
+            <button type="submit"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
+              Submit
+            </button>
           </div>
         </form>
       </div>

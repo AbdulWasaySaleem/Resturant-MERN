@@ -1,144 +1,49 @@
-import React from "react";
+import React from 'react';
 
 const Faq = () => {
+  const faqs = [
+    {
+      question: 'What are your opening hours?',
+      answer: 'Our restaurant is open from 9AM to 9PM every day. Please note our kitchen may close earlier.'
+    },
+    {
+      question: 'Do you offer vegetarian/vegan/gluten-free options?',
+      answer: 'Yes, we have a variety of options for vegetarians, vegans, and gluten-free dietary needs.'
+    },
+    {
+      question: 'Can I track the status of my online order?',
+      answer: 'Yes! You’ll receive an order confirmation email and real-time tracking through our site or app.'
+    },
+    {
+      question: 'Do you offer contactless delivery and curbside pickup options?',
+      answer: 'Absolutely! You can select your preferred delivery method during checkout for a safe experience.'
+    }
+  ];
+
   return (
-    <>
-      <div class="relative w-full mb-4 bg-white px-6 pt-10 pb-8 mt-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-2xl sm:rounded-lg sm:px-10">
-        <div class="mx-auto px-5">
-          <div class="flex flex-col items-center">
-            <h2 class="mt-5 text-center text-3xl font-bold tracking-tight md:text-5xl">
-              FAQ
-            </h2>
-            <p class="mt-3 text-lg text-neutral-500 md:text-xl">
-              Frequenty asked questions
-            </p>
-          </div>
-          <div class="mx-auto mt-8 grid max-w-xl divide-y divide-neutral-200">
-            <div class="py-5">
-              <details class="group">
-                <summary class="flex cursor-pointer list-none items-center justify-between font-medium">
-                  <span>What are your opening hours?</span>
-                  <span class="transition group-open:rotate-180">
-                    <svg
-                      fill="none"
-                      height="24"
-                      shape-rendering="geometricPrecision"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      viewBox="0 0 24 24"
-                      width="24"
-                    >
-                      <path d="M6 9l6 6 6-6"></path>
-                    </svg>
-                  </span>
-                </summary>
-                <p class="group-open:animate-fadeIn mt-3 text-neutral-600">
-                  Our restaurant is open from 9AM to 9PM every day of the week.
-                  Please note that our kitchen may close earlier than the
-                  restaurant, so we recommend checking with us for specific
-                  dining hours.
-                </p>
-              </details>
-            </div>
-            <div class="py-5">
-              <details class="group">
-                <summary class="flex cursor-pointer list-none items-center justify-between font-medium">
-                  <span>
-                    {" "}
-                    Do you offer vegetarian/vegan/gluten-free options?{" "}
-                  </span>
-                  <span class="transition group-open:rotate-180">
-                    <svg
-                      fill="none"
-                      height="24"
-                      shape-rendering="geometricPrecision"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      viewBox="0 0 24 24"
-                      width="24"
-                    >
-                      <path d="M6 9l6 6 6-6"></path>
-                    </svg>
-                  </span>
-                </summary>
-                <p class="group-open:animate-fadeIn mt-3 text-neutral-600">
-                  Yes, we have a variety of options available for vegetarians,
-                  vegans, and those with gluten-free dietary preferences. Our
-                  menu includes designated items specifically crafted to
-                  accommodate these dietary needs.
-                </p>
-              </details>
-            </div>
-            <div class="py-5">
-              <details class="group">
-                <summary class="flex cursor-pointer list-none items-center justify-between font-medium">
-                  <span> Can I track the status of my online order?</span>
-                  <span class="transition group-open:rotate-180">
-                    <svg
-                      fill="none"
-                      height="24"
-                      shape-rendering="geometricPrecision"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      viewBox="0 0 24 24"
-                      width="24"
-                    >
-                      <path d="M6 9l6 6 6-6"></path>
-                    </svg>
-                  </span>
-                </summary>
-                <p class="group-open:animate-fadeIn mt-3 text-neutral-600">
-                  Yes, you can! Once you've placed your online order, you'll
-                  receive an order confirmation email with details about your
-                  order. You can also track the status of your order in
-                  real-time through our website or mobile app. We'll keep you
-                  informed every step of the way, from preparation to delivery.
-                </p>
-              </details>
-            </div>
-            <div class="py-5">
-              <details class="group">
-                <summary class="flex cursor-pointer list-none items-center justify-between font-medium">
-                  <span>
-                    Do you offer contactless delivery and curbside pickup
-                    options?
-                  </span>
-                  <span class="transition group-open:rotate-180">
-                    <svg
-                      fill="none"
-                      height="24"
-                      shape-rendering="geometricPrecision"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      viewBox="0 0 24 24"
-                      width="24"
-                    >
-                      <path d="M6 9l6 6 6-6"></path>
-                    </svg>
-                  </span>
-                </summary>
-                <p class="group-open:animate-fadeIn mt-3 text-neutral-600">
-                  Absolutely! We understand the importance of safety and
-                  convenience, which is why we offer contactless delivery and
-                  curbside pickup options for all online orders. Simply select
-                  your preferred delivery method during checkout, and our team
-                  will ensure a seamless and hassle-free experience.
-                </p>
-              </details>
-            </div>
-         
-          </div>
+    <div className="bg-gradient-to-br from-purple-50 via-white to-blue-50 min-h-screen py-12 px-4">
+      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-8 border border-blue-100">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold text-purple-700">FAQs</h2>
+          <p className="text-lg text-gray-500 mt-2">Frequently Asked Questions</p>
+        </div>
+
+        <div className="space-y-6">
+          {faqs.map((faq, index) => (
+            <details key={index} className="group border-b pb-4">
+              <summary className="flex justify-between items-center cursor-pointer text-lg font-medium text-gray-800">
+                <span>{faq.question}</span>
+                <svg className="w-5 h-5 text-gray-500 transition-transform duration-300 group-open:rotate-180"
+                     fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <p className="mt-3 text-gray-600 leading-relaxed">{faq.answer}</p>
+            </details>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
