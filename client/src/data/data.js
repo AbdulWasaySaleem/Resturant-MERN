@@ -27,21 +27,25 @@ export const foodTypes = [
     {
         name: 'burger',
         img: burger1,
+        rating: 4.8,
         id: crypto.randomUUID()
     },
     {
         name: 'gyros',
         img: gyros1,
+        rating: 4.5,
         id: crypto.randomUUID()
     },
     {
         name: 'pizza',
         img: pizza1,
+        rating: 4.7,
         id: crypto.randomUUID()
     },
     {
         name: 'pasta',
         img: pasta1,
+        rating: 4.6,
         id: crypto.randomUUID()
     },
 ]

@@ -1,25 +1,28 @@
-// Helper function to generate order ID (you can use any method you prefer)
-
 import nodemailer from "nodemailer";
-import Order from "../Model/Order.js"; // Import your Order model
+import dotenv from "dotenv";
+import Order from "../Model/Order.js";
+import {
+  handleResponse,
+  handleError,
+  successResponse,
+  errorResponse,
+} from "../utils/responseHandler.js";
 
-// Create a Nodemailer transporter
+dotenv.config();
+
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "07.abdulwasayy@gmail.com", // Your Gmail email address
-    pass: "", // Your Gmail password
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
   },
 });
 
 export const orderController = async (req, res) => {
   try {
     const { userId, userEmail, products } = req.body;
-
-    // Generate a unique order ID
     const orderId = "ORDER" + Math.floor(Math.random() * 1000000);
 
-    // Construct the products array with necessary fields
     const orderProducts = products.map((product) => ({
       productId: product.productId,
       quantity: product.quantity,
@@ -28,100 +31,139 @@ export const orderController = async (req, res) => {
       price: product.price,
     }));
 
-    // Validate and save the order to the database
     const order = new Order({
       orderId,
       userId,
       userEmail,
       products: orderProducts,
-      // You can add other order details here
     });
     await order.save();
 
-    res.status(201).json({ success: true, orderId: order.orderId }); // Send orderId back to frontend
+    return handleResponse(
+      res,
+      201,
+      { orderId: order.orderId },
+      "Order placed successfully"
+    );
   } catch (error) {
-    console.error("Error placing order:", error.message);
-    res.status(500).json({ success: false, error: "Internal server error" });
+    return handleError(res, error, "Error placing order");
   }
 };
 
 export const getUserOrder = async (req, res) => {
   try {
     const { userId, email } = req.query;
-
-    // Find the latest order for the given user ID or email
     const latestOrder = await Order.findOne({ $or: [{ userId }, { email }] })
-      .sort({ createdAt: -1 }) // Sort by createdAt timestamp in descending order
-      .limit(1); // Limit the result to only one document
+      .sort({ createdAt: -1 })
+      .limit(1);
 
-    res.json({ success: true, order: latestOrder });
+    return handleResponse(
+      res,
+      200,
+      { order: latestOrder },
+      "Order fetched successfully"
+    );
   } catch (error) {
-    console.error("Error fetching latest order:", error);
-    res.status(500).json({ success: false, error: "Internal server error" });
+    return handleError(res, error, "Error fetching latest order");
   }
 };
 
 export const getUserOrderConfirm = async (req, res) => {
   try {
     const { userId, userEmail } = req.body;
-
-    // Find the latest order for the given user ID or email
     const latestOrder = await Order.findOne({
-      $or: [{ userId }, { userEmail: userEmail }],
+      $or: [{ userId }, { userEmail }],
     })
       .sort({ createdAt: -1 })
       .limit(1);
 
     if (!latestOrder) {
-      return res.status(404).json({ success: false, error: "No order found" });
+      return handleResponse(res, 404, {}, "No order found");
     }
 
-    // Email text for the client's confirmation
-    let clientEmailText = `Your order has been confirmed. Thank you for shopping with us!\n\n`;
+    const clientEmailHTML = `
+      <h2>Your Order Confirmation</h2>
+      <p>Thank you for shopping with us!</p>
+      <ul>
+        ${latestOrder.products
+          .map(
+            (product) => `
+              <li>
+                <strong>${product.title}</strong><br/>
+                Quantity: ${product.quantity}<br/>
+                Price: ${product.price}
+              </li>
+            `
+          )
+          .join("")}
+      </ul>
+    `;
 
-    // Construct email text for each product
-    latestOrder.products.forEach((product, index) => {
-      clientEmailText += `Product ${index + 1}:\n`;
-      clientEmailText += `  Name: ${product.title}\n`;
-      clientEmailText += `  Quantity: ${product.quantity}\n`;
-      clientEmailText += `  Price: ${product.price}\n\n`;
-    });
+    const adminEmailHTML = `
+      <h2>New Order Placed</h2>
+      <p>User Email: ${latestOrder.userEmail}</p>
+      <ul>
+        ${latestOrder.products
+          .map(
+            (product) => `
+              <li>
+                <strong>${product.title}</strong><br/>
+                Quantity: ${product.quantity}<br/>
+                Price: ${product.price}
+              </li>
+            `
+          )
+          .join("")}
+      </ul>
+    `;
 
-    // Email text for the admin notification
-    let adminEmailText = `New order placed:\n\n`;
-
-    // Construct email text for each product
-    latestOrder.products.forEach((product, index) => {
-      adminEmailText += `Product ${index + 1}:\n`;
-      adminEmailText += `  Name: ${product.title}\n`;
-      adminEmailText += `  Quantity: ${product.quantity}\n`;
-      adminEmailText += `  Price: ${product.price}\n\n`;
-    });
-
-    adminEmailText += `User Email: ${latestOrder.userEmail}`;
-
-    // Sending email to the client's email address
     await transporter.sendMail({
-      from: "07.abdulwasayy@gmail.com", // Admin email address
+      from: process.env.GMAIL_USER,
       to: latestOrder.userEmail,
       subject: `Order Confirmation`,
-      text: clientEmailText,
+      html: clientEmailHTML,
     });
 
-    // Sending email to the admin's email address
     await transporter.sendMail({
-      from: "07.abdulwasayy@gmail.com", // Admin email address
-      to: "", // Admin email address
+      from: process.env.GMAIL_USER,
+      to: process.env.GMAIL_ADMIN_USER,
       subject: `New Order Placed`,
-      text: adminEmailText,
+      html: adminEmailHTML,
     });
 
-    res.status(200).json({ success: true, message: "Emails sent successfully" });
+    return handleResponse(res, 200, {}, "Emails sent successfully");
   } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).json({ success: false, error: "Internal server error" });
+    return handleError(res, error, "Error sending email");
   }
 };
 
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({})
+      .sort({ createdAt: -1 })
+      .select("orderId userEmail products createdAt")
+      .lean();
 
+    const simplifiedOrders = orders.map((order) => ({
+      _id: order._id,
+      orderId: order.orderId,
+      userEmail: order.userEmail,
+      totalItems: order.products.length,
+      totalAmount: order.products.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      ),
+      createdAt: order.createdAt,
+    }));
 
+    return successResponse(
+      res,
+      200,
+      { orders: simplifiedOrders },
+      "All orders fetched successfully"
+    );
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return errorResponse(res, 500, "Failed to fetch orders");
+  }
+};

@@ -1,128 +1,101 @@
 import User from "../Model/User.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import {
+  successResponse,
+  errorResponse,
+  handleResponse,
+  handleError,
+} from "../utils/responseHandler.js";
+import { generateToken } from "../utils/jwtHelper.js";
 
-//register controller
+// Register controller
 export const registerController = async (req, res) => {
   try {
-    // Check if user already exists
     const existingUser = await User.findOne({ email: req.body.email });
     if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "User with this email already exists",
-      });
+      return errorResponse(res, 400, "User with this email already exists");
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-    // Create a new user
     const newUser = await User.create({
       ...req.body,
       password: hashedPassword,
     });
 
-    // Exclude password field from the response
     const { password, ...userWithoutPassword } = newUser.toObject();
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: newUser._id, isAdmin: newUser.isAdmin },
-      "14326wasay14326",
-      { expiresIn: "5h" }
-    );
+    const token = generateToken(newUser._id, newUser.isAdmin);
 
-    // Return success response
-    res.status(201).json({
-      user: userWithoutPassword,
-      token,
-      success: true,
-      message: "User registered successfully",
-    });
+    return successResponse(
+      res,
+      201,
+      { user: userWithoutPassword, token },
+      "User registered successfully"
+    );
   } catch (error) {
-    console.error("Error with Register Controller:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error with Register Controller",
-      error: error.message,
-    });
+    return handleError(res, error, "Error with Register Controller");
   }
 };
-//login controller
+
+// Login controller
 export const loginController = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res.send({
-        message: "User Not Register",
-      });
-    }
-    //password
-    const comparePass = await bcrypt.compare(req.body.password, user.password);
-    if (!comparePass) {
-      return res.send({
-        message: "Incorrect Password",
-      });
+      return errorResponse(res, 404, "User not registered");
     }
 
-    // Exclude password field from the response
+    const comparePass = await bcrypt.compare(req.body.password, user.password);
+    if (!comparePass) {
+      return errorResponse(res, 401, "Incorrect password");
+    }
+
     const { password, ...userWithoutPassword } = user.toObject();
-    //generating token
-    const token = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin },
-      "14326wasay14326",
-      { expiresIn: "5h" }
+
+    const token = generateToken(user._id, user.isAdmin);
+
+    return successResponse(
+      res,
+      200,
+      { user: userWithoutPassword, token },
+      "User logged in successfully"
     );
-    return res.status(200).send({
-      user: userWithoutPassword,
-      token,
-      success: true,
-      message: "User registered successfully",
-    });
   } catch (error) {
-    console.error("Error with Login Controller:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error with Login Controller",
-      error: error.message,
-    });
+    return handleError(res, error, "Error with Login Controller");
   }
 };
 
-//all users
+// Get all users
 export const getAllUserController = async (req, res) => {
   try {
     const users = await User.find();
-    res.status(200).json(users);
+    return handleResponse(res, 200, users, "Users fetched successfully");
   } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return handleError(res, error, "Error fetching users");
   }
 };
 
-//make admin to user
+// Toggle isAdmin
 export const toggleAdminController = async (req, res) => {
-  const userId = req.params.id;
-
   try {
+    const userId = req.params.id;
     const user = await User.findById(userId);
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return errorResponse(res, 404, "User not found");
     }
 
-    // Toggle the value of isAdmin field
     user.isAdmin = !user.isAdmin;
-
-    // Save the updated user to the database
     await user.save();
 
-    return res.status(200).json({
-      message: "User isAdmin toggled successfully",
-      isAdmin: user.isAdmin,
-    });
+    return successResponse(
+      res,
+      200,
+      { isAdmin: user.isAdmin },
+      "User isAdmin toggled successfully"
+    );
   } catch (error) {
-    console.error("Error toggling user isAdmin:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return handleError(res, error, "Error toggling isAdmin status");
   }
 };

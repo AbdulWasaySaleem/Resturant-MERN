@@ -10,7 +10,7 @@ import { verifyTokenAdmin } from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
-//APIS
+
 router.post("/register", registerController);
 router.post("/login", loginController);
 router.get("/allusers", verifyTokenAdmin, getAllUserController);

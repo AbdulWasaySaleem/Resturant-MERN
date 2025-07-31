@@ -6,7 +6,3 @@ server/.env
 client/node_modules/
 server/node_modules/
 
-# Optional: OS / editor files
-.DS_Store
-*.log
-.env

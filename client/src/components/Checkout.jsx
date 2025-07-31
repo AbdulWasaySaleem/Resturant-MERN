@@ -1,140 +1,112 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { clearCart } from "../redux/cartSlice.js";
+import axiosInstance from "../utils/axiosinstance.js";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
   const [userOrders, setUserOrders] = useState([]);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserOrders = async () => {
-      try {
-        // Extract userId from user object
-        const userId = user._id;
+  const fetchUserOrders = async () => {
+    try {
+      const userId = user._id;
 
-        // Send request to backend API to fetch user's orders
-        const response = await axios.get(
-          "http://localhost:3000/order/userOrder",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
-            params: {
-              userId: userId, // Include userId as query parameter
-            },
-          }
-        );
-        //console.log(response.data);
-        setUserOrders(response?.data?.order);
+      const response = await axiosInstance.get("/order/userOrder", {
+        params: { userId },
+      });
 
-        // Clear the cart after fetching user's orders
+      const fetchedOrder = response?.data?.data?.order;
+
+      console.log("User orders fetched successfully:", fetchedOrder);
+
+      if (fetchedOrder) {
+        setUserOrders(fetchedOrder);
         dispatch(clearCart());
-
-        // Send email confirmation
-        await sendEmailConfirmation(response.data.order);
-      } catch (error) {
-        console.error("Error fetching user orders:", error);
+        await sendEmailConfirmation(fetchedOrder);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching user orders:", error);
+    }
+  };
 
+  if (user) {
     fetchUserOrders();
-  }, [user, dispatch]);
+  }
+}, [user, dispatch]);
 
-  //sendign mail confirmation
+
   const sendEmailConfirmation = async (order) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/order/confirmOrder",
-        { userId: order?.userId, email: order?.userEmail }
-      );
-
-      //console.log("Email sent successfully:", response.data);
+      await axiosInstance.post("/order/confirmOrder", {
+        userId: order?.userId,
+        email: order?.userEmail,
+      });
+      toast.success("Order confirmation email sent successfully!");
     } catch (error) {
       console.error("Error sending email:", error);
     }
   };
-  
 
   const order = userOrders;
-  //console.log("first", order);
+
   return (
-    <div className="flex justify-center items-center">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-4">Your Order</h2>
-        <div>
-          <p>
-            <span className="font-bold">Order ID:</span> {order.orderId}
-          </p>
-          <p>
-            <span className="font-bold">User Email:</span> {order.userEmail}
-          </p>
-          <h3 className="text-lg font-bold mt-4">Products:</h3>
-          {order?.products?.map((product, index) => (
-            <div key={index} className="border-t border-gray-300 mt-2">
-              <p>
-                <span className="font-bold">Title:</span> {product.title}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-10 px-4">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-lg shadow hover:scale-105 transition-transform"
+        >
+          ← Go Back
+        </button>
+
+        <h2 className="text-3xl font-bold text-gray-800 mb-4">Order Summary</h2>
+
+        {!order || !order.products ? (
+          <p className="text-gray-600">You have no recent orders.</p>
+        ) : (
+          <>
+            <div className="mb-4">
+              <p className="text-gray-700">
+                <span className="font-semibold">Order ID:</span> {order.orderId}
               </p>
-              <p>
-                <span className="font-bold">Quantity:</span> {product.quantity}
-              </p>
-              <p>
-                <span className="font-bold">Category:</span> {product.category}
-              </p>
-              <p>
-                <span className="font-bold">Price:</span> ${product.price}
+              <p className="text-gray-700">
+                <span className="font-semibold">Email:</span> {order.userEmail}
               </p>
             </div>
-          ))}
-        </div>
+
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Products</h3>
+
+            <div className="space-y-4 max-h-80 overflow-y-auto pr-2">
+              {order.products.map((product, index) => (
+                <div
+                  key={index}
+                  className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition"
+                >
+                  <p>
+                    <span className="font-medium">Title:</span> {product.title}
+                  </p>
+                  <p>
+                    <span className="font-medium">Quantity:</span> {product.quantity}
+                  </p>
+                  <p>
+                    <span className="font-medium">Category:</span> {product.category}
+                  </p>
+                  <p>
+                    <span className="font-medium">Price:</span> ${product.price}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 };
-
-
-
-{/*
-
-
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: "houseofdumplingsapp@gmail.com",
-        pass: "cota rmpk tngw qczh ",
-    },
-});
-
-async function sendMail(subject, text, to) {
-    if (!subject || !text) {
-        console.error("Subject and text are required to send an email");
-        return; // Do not proceed if subject or text is missing
-    }
-
-    var mailOptions = {
-        from: "houseofdumplingsapp@gmail.com",
-        //! Change
-        to: to || "shahryar2k3@gmail.com, arsalnaeem1@gmail.com",
-        subject: subject,
-        html: text,
-    };
-
-    try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log("Message sent: " + info.response);
-        return info;
-    } catch (error) {
-        console.error("Error sending email:", error);
-        throw error;
-    }
-}
-
-module.exports = sendMail;
-
-
-*/}
 
 export default Checkout;

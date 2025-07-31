@@ -2,20 +2,19 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeProduct, clearCart } from "../redux/cartSlice.js";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../utils/axiosinstance.js";
+
 
 const Cart = () => {
   const [orderId, setOrderId] = useState("");
   const { products } = useSelector((state) => state.cart);
   const user = useSelector((state) => state.auth.user);
-  //console.log(user.email);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  let totalPrice = 0;
-  products.forEach(
-    (product) => (totalPrice += product.quantity * product.price)
+  let totalPrice = products.reduce(
+    (acc, product) => acc + product.quantity * product.price,
+    0
   );
 
   const handleRemoveProduct = (id) => {
@@ -27,99 +26,97 @@ const Cart = () => {
       userId: user._id,
       userEmail: user?.email,
       products: products.map((product) => ({
-        productId: product._id, 
+        productId: product._id,
         quantity: product.quantity,
         title: product.title,
         price: product.price,
         category: product.category,
       })),
     };
-    //console.log(orderData);
+
     try {
-      const response = await axios.post(
-        "http://localhost:3000/order/yourorders",
-        orderData
-      );
-      //console.log(response.data);
+      const response = await axiosInstance.post("/order/yourorders", orderData);
+      console.log("Order placed successfully:", response.data);
       setOrderId(response.data.orderId);
+      navigate("/checkout");
     } catch (error) {
       console.error("Error placing order:", error.message);
-    }
-
-    if (products.length > 0) {
-      //dispatch(clearCart());
-      navigate("/checkout");
     }
   };
 
   return (
-    <>
-      <div className="container mx-auto px-4 py-8 bg-gray-100">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-          <div className="w-full md:w-full mr-2">
-            <h2 className="text-xl md:text-2xl font-semibold mb-4">
-              Customer's Cart
-            </h2>
-            {products.length > 0 ? (
-              products.map((product) => (
+    <div className="bg-gray-50 py-10 px-4 sm:px-6 lg:px-8 min-h-screen">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">
+          Your Cart
+        </h2>
+        {products.length === 0 ? (
+          <p className="text-lg text-gray-600">No products found in your cart.</p>
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Products List */}
+            <div className="flex-1 space-y-6">
+              {products.map((product) => (
                 <div
                   key={product._id}
-                  className="flex items-center mb-4 border"
+                  className="flex items-center bg-white rounded-xl shadow-sm p-4 border border-gray-200"
                 >
                   <img
-                    src={`http://localhost:3000/pictures/${product.img}`}
+                    src={product.img}
                     alt={product.title}
-                    className="w-24 h-24 object-cover mr-4"
+                    className="w-24 h-24 rounded-lg object-cover mr-6"
                   />
-                  <div>
-                    <h3 className="text-lg font-semibold">{product.title}</h3>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      {product.title}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Category: {product.category}
+                    </p>
                     <p className="text-sm text-gray-600">
                       Quantity: {product.quantity}
                     </p>
-                    <p className="text-lg font-semibold">${product.price}</p>
-                    <div
-                      onClick={() => handleRemoveProduct(product._id)}
-                      className="cursor-pointer mr-4 text-red-600"
-                    >
-                      Remove
-                    </div>
+                    <p className="text-sm font-medium text-blue-600">
+                      Price: ${product.price}
+                    </p>
                   </div>
+                  <button
+                    onClick={() => handleRemoveProduct(product._id)}
+                    className="text-red-500 hover:text-red-700 font-medium text-sm"
+                  >
+                    Remove
+                  </button>
                 </div>
-              ))
-            ) : (
-              <p>No products found</p>
-            )}
-          </div>
-          <div className="w-full md:w-1/5">
-            <div className="bg-gray-200 p-4 rounded-lg">
-              <h3 className="text-xl font-semibold mb-2">Summary</h3>
-              <div className="flex justify-between mb-2">
-                <p className="text-base text-gray-700">Subtotal:</p>
-                <p className="text-base font-semibold">${totalPrice}</p>
+              ))}
+            </div>
+
+            {/* Order Summary */}
+            <div className="w-full lg:w-1/3 bg-white border border-gray-200 rounded-xl p-6 shadow-md h-fit">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Summary</h3>
+              <div className="flex justify-between text-gray-700 mb-2">
+                <span>Subtotal</span>
+                <span className="font-medium">${totalPrice}</span>
               </div>
-              <div className="flex justify-between mb-2">
-                <p className="text-base text-gray-700">Total Products:</p>
-                <p className="text-base font-semibold">{products.length}</p>
+              <div className="flex justify-between text-gray-700 mb-6">
+                <span>Total Items</span>
+                <span className="font-medium">{products.length}</span>
               </div>
               <button
                 onClick={handleOrder}
-                disabled={products.length === 0 || !user} // Check if user exists
-                className={`py-2 px-4 rounded-full font-bold ${
-                  products.length === 0 || !user // Update condition
+                disabled={products.length === 0 || !user}
+                className={`w-full py-3 text-white rounded-full font-semibold transition ${
+                  products.length === 0 || !user
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
+                    : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                 }`}
               >
-                {user ? "Order now" : "Login First"}{" "}
-                {/* Update button text based on user */}
+                {user ? "Proceed to Checkout" : "Login First"}
               </button>
             </div>
           </div>
-        </div>
+        )}
       </div>
-
-      {/* asdasdasd */}
-    </>
+    </div>
   );
 };
 

@@ -1,138 +1,213 @@
-import React from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice";
 import { CgProfile } from "react-icons/cg";
+import { HiMenuAlt3, HiX, HiShoppingCart } from "react-icons/hi";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { products } = useSelector((state) => state.cart);
   const user = useSelector((state) => state.auth.user);
   const isAuthenticated = user !== null;
 
-  // Logout
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
+    setIsMenuOpen(false);
   };
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const navLinks = [
+    { to: "/", label: "Home" },
+    { to: "/foods", label: "Menu" },
+    { to: "/contact", label: "Contact" },
+    { to: "/faq", label: "FAQ" }
+  ];
+
   return (
-    <div className="">
-      <nav className="relative flex items-center justify-between sm:h-10 md:justify-center py-6 px-4 mt-2">
-        {/* Left side of the header */}
-        <div className="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <div className="flex items-center justify-between w-full md:w-auto">
-       
+          <div className="flex items-center space-x-2">
+            <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl">
               <img
                 src="https://www.svgrepo.com/show/491978/gas-costs.svg"
-                height={40}
-                width={40}
+                height={28}
+                width={28}
+                className="filter invert brightness-0 contrast-100"
+                alt="Logo"
               />
-          
-            <div className="-mr-2 flex items-center md:hidden">
-              <button
-                type="button"
-                id="main-menu"
-                aria-label="Main menu"
-                aria-haspopup="true"
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-              >
-                <svg
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="h-6 w-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </button>
             </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              FoodieHub
+            </span>
           </div>
-        </div>
-        {/* Center of the header */}
-        <div className="hidden md:flex md:space-x-10">
-          <Link
-            to="/"
-            className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
-          >
-            Home
-          </Link>
-          <Link
-            to="/contact"
-            className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
-          >
-            Contact
-          </Link>
-          <Link
-            to="/foods"
-            className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
-          >
-            Foods
-          </Link>
-          <Link
-            to="/faq"
-            className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
-          >
-            FAQ
-          </Link>
 
-          {user?.isAdmin && (
-            <Link
-              to="/adminpanel"
-              className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
-            >
-              Admin
-            </Link>
-          )}
-        </div>
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+              >
+                {link.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            ))}
+            {user?.isAdmin && (
+              <Link
+                to="/adminpanel"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+              >
+                Admin
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            )}
+          </div>
 
-        {/* Right side of the header */}
-
-        <div className="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
-          <span className="inline-flex">
+          {/* Desktop Actions */}
+          <div className="hidden lg:flex items-center space-x-4">
             <Link
               to="/cart"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
+              className="relative flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors duration-200"
             >
-              Cart ({products.length})
+              <HiShoppingCart className="h-6 w-6" />
+              <span className="font-medium">Cart</span>
+              {products.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {products.length}
+                </span>
+              )}
             </Link>
-            {/* Render profile icon or login link based on authentication status */}
+
             {isAuthenticated ? (
-              <>
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg">
+                  <CgProfile className="h-5 w-5 text-gray-600" />
+                  <span className="text-sm font-medium text-gray-700 hidden xl:block">
+                    {user.name || "User"}
+                  </span>
+                </div>
                 <button
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
                   onClick={handleLogout}
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors duration-200"
                 >
                   Logout
                 </button>
-              </>
+              </div>
             ) : (
-              <>
+              <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="inline-flex items-center px-4 py-2 text-base font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
+                  className="px-4 py-2 text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center px-4 py-2 text-base font-medium text-blue-600 hover:text-blue-500 focus:outline-none transition duration-150 ease-in-out"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
                 >
-                  Signup
+                  Sign Up
                 </Link>
-              </>
+              </div>
             )}
-          </span>
+          </div>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={toggleMenu}
+            className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+          >
+            {isMenuOpen ? <HiX className="h-6 w-6" /> : <HiMenuAlt3 className="h-6 w-6" />}
+          </button>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-lg">
+            <div className="px-4 py-6 space-y-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              {user?.isAdmin && (
+                <Link
+                  to="/adminpanel"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                >
+                  Admin
+                </Link>
+              )}
+              
+              <div className="pt-4 border-t border-gray-100">
+                <Link
+                  to="/cart"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-between py-3 text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                >
+                  <span className="flex items-center space-x-2">
+                    <HiShoppingCart className="h-5 w-5" />
+                    <span>Cart</span>
+                  </span>
+                  {products.length > 0 && (
+                    <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {products.length}
+                    </span>
+                  )}
+                </Link>
+
+                {isAuthenticated ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2 py-2">
+                      <CgProfile className="h-5 w-5 text-gray-600" />
+                      <span className="text-sm font-medium text-gray-700">
+                        {user.username || "User"}
+                      </span>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors duration-200"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block w-full px-4 py-2 text-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/signup"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-center transition-colors duration-200"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
-    </div>
+    </header>
   );
 };
 

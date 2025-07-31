@@ -1,11 +1,10 @@
 import express from "express";
 import cors from "cors";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
-import authRoute from "./route/authRoute.js"
-import productRoute from "./route/productRoute.js"
-import imageRoute from "./route/uploadRoute.js"
-import orderRoute from "./route/orderRoute.js"
+import authRoute from "./route/authRoute.js";
+import productRoute from "./route/productRoute.js";
+import orderRoute from "./route/orderRoute.js";
+import connectDB from "./config/connectDb.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -14,31 +13,25 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL
+}));
 app.use(express.json());
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
 
 //routes
-app.use("/pictures", express.static('public/images'))
-app.use("/auth", authRoute)
-app.use("/products", productRoute)
-app.use("/images", imageRoute)
-app.use('/order', orderRoute)
+app.use("/auth", authRoute);
+app.use("/products", productRoute);
+app.use("/order", orderRoute);
 
-// Connect to MongoDB database
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Database connected successfully!");
-    // Start the server
-    const PORT = 3000;
-    app.listen(3000, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.error("Error connecting to database:", error);
+const PORT = process.env.PORT;
+
+const startServer = async () => {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
   });
+};
+
+startServer();
