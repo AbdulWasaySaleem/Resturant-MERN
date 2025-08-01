@@ -12,7 +12,8 @@ const ProtectedRoute = ({
     return <Navigate to={redirectTo} replace />;
   }
 
-  if (adminOnly && !user.isAdmin) {
+  // Correct check: block only if adminOnly is true AND user is not an admin or demo admin
+  if (adminOnly && !user.isAdmin && !user.isDemoAdmin) {
     return <Navigate to="/noaccess" replace />;
   }
 

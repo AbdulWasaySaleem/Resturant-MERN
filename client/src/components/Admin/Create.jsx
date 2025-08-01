@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosinstance";
+import { toast } from "react-toastify";
 
 const Create = () => {
   const [title, setTitle] = useState("");
@@ -10,6 +11,7 @@ const Create = () => {
   const [image, setImage] = useState(null);
   const [price, setPrice] = useState("");
   const [review, setReview] = useState("");
+  const [loading, setLoading] = useState(false); // ✅ Loading state
   const navigate = useNavigate();
 
   const onChangeFile = (e) => setImage(e.target.files[0]);
@@ -17,29 +19,40 @@ const Create = () => {
 
   const handleCreateProduct = async (e) => {
     e.preventDefault();
+
+    if (!image) {
+      toast.error("Image is required");
+      return;
+    }
+
     try {
+      setLoading(true); // ✅ Start loading
       const formData = new FormData();
 
-      if (!image) {
-        return console.error("Image is required");
-      }
-
-      formData.append("image", image); 
-
+      formData.append("image", image);
       formData.append("title", title);
       formData.append("description", desc);
       formData.append("category", category);
       formData.append("price", price);
       formData.append("review", review);
 
-      await axiosInstance.post("/products/create", formData,{
+      const response = await axiosInstance.post("/products/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+
+      toast.success("Product created successfully!");
       navigate("/adminpanel");
     } catch (error) {
-      console.error("Error creating product:", error.message);
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Something went wrong";
+
+      toast.error(message);
+    } finally {
+      setLoading(false); // ✅ End loading
     }
   };
 
@@ -59,6 +72,7 @@ const Create = () => {
           placeholder="Title..."
           onChange={(e) => setTitle(e.target.value)}
           required
+          disabled={loading}
         />
         <input
           type="text"
@@ -66,6 +80,7 @@ const Create = () => {
           placeholder="Description..."
           onChange={(e) => setDesc(e.target.value)}
           required
+          disabled={loading}
         />
         <input
           type="text"
@@ -73,12 +88,13 @@ const Create = () => {
           placeholder="Category..."
           onChange={(e) => setCategory(e.target.value)}
           required
+          disabled={loading}
         />
         <div className="relative border border-indigo-300 rounded px-4 py-2 text-sm text-center text-indigo-700 bg-indigo-50">
           <label htmlFor="image" className="cursor-pointer block font-medium">
             {image ? `${image.name}` : "Upload Image"}
           </label>
-          {image && (
+          {image && !loading && (
             <AiOutlineCloseCircle
               onClick={handleCloseImg}
               className="absolute right-2 top-2 text-red-500 cursor-pointer text-lg"
@@ -89,6 +105,7 @@ const Create = () => {
             id="image"
             className="hidden"
             onChange={onChangeFile}
+            disabled={loading}
           />
         </div>
         <input
@@ -97,6 +114,7 @@ const Create = () => {
           placeholder="Price..."
           onChange={(e) => setPrice(e.target.value)}
           required
+          disabled={loading}
         />
         <input
           type="number"
@@ -104,12 +122,16 @@ const Create = () => {
           placeholder="Review..."
           onChange={(e) => setReview(e.target.value)}
           required
+          disabled={loading}
         />
         <button
           type="submit"
-          className="bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 w-full font-semibold"
+          className={`bg-indigo-600 text-white py-2 px-6 rounded w-full font-semibold ${
+            loading ? "opacity-60 cursor-not-allowed" : "hover:bg-indigo-700"
+          }`}
+          disabled={loading}
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
     </div>

@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
   isAdmin: {
     type: Boolean,
     default: false // Default value for isAdmin is false
+  },
+  isDemoAdmin:{
+    type: Boolean,
+    default: false // Default value for isDemoAdmin is false
   }
 });
 

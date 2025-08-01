@@ -6,15 +6,24 @@ import {
   toggleAdminController,
   //toggleAdminController,
 } from "../controllers/authController.js";
-import { verifyTokenAdmin } from "../middleware/verifyToken.js";
+import {
+  verifyTokenAdmin
+} from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
-
 router.post("/register", registerController);
 router.post("/login", loginController);
-router.get("/allusers", verifyTokenAdmin, getAllUserController);
-router.patch("/users/toggle/:id", verifyTokenAdmin, toggleAdminController);
+router.get(
+  "/allusers",
+  verifyTokenAdmin,
+  getAllUserController
+);
+router.patch(
+  "/users/toggle/:id",
+  verifyTokenAdmin,
+  toggleAdminController
+);
 
 //exporting
 export default router;

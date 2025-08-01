@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice";
 import { CgProfile } from "react-icons/cg";
 import { HiMenuAlt3, HiX, HiShoppingCart } from "react-icons/hi";
+import logo from "/logo.svg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Header = () => {
     { to: "/", label: "Home" },
     { to: "/foods", label: "Menu" },
     { to: "/contact", label: "Contact" },
-    { to: "/faq", label: "FAQ" }
+    { to: "/faq", label: "FAQ" },
   ];
 
   return (
@@ -35,17 +36,14 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl">
-              <img
-                src="https://www.svgrepo.com/show/491978/gas-costs.svg"
-                height={28}
-                width={28}
-                className="filter invert brightness-0 contrast-100"
-                alt="Logo"
-              />
+              <img src={logo} height={28} width={28} alt="Logo" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              FoodieHub
-            </span>
+            <Link to={"/"}>
+              {" "}
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                FoodieHub
+              </span>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -60,7 +58,7 @@ const Header = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
-            {user?.isAdmin && (
+            {(user?.isAdmin || user?.isDemoAdmin) && (
               <Link
                 to="/adminpanel"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
@@ -124,7 +122,11 @@ const Header = () => {
             onClick={toggleMenu}
             className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
           >
-            {isMenuOpen ? <HiX className="h-6 w-6" /> : <HiMenuAlt3 className="h-6 w-6" />}
+            {isMenuOpen ? (
+              <HiX className="h-6 w-6" />
+            ) : (
+              <HiMenuAlt3 className="h-6 w-6" />
+            )}
           </button>
         </div>
 
@@ -142,16 +144,16 @@ const Header = () => {
                   {link.label}
                 </Link>
               ))}
-              {user?.isAdmin && (
+              {(user?.isAdmin || user?.isDemoAdmin) && (
                 <Link
                   to="/adminpanel"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
                 >
                   Admin
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               )}
-              
+
               <div className="pt-4 border-t border-gray-100">
                 <Link
                   to="/cart"

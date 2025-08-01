@@ -53,7 +53,7 @@ export const loginController = async (req, res) => {
 
     const { password, ...userWithoutPassword } = user.toObject();
 
-    const token = generateToken(user._id, user.isAdmin);
+    const token = generateToken(user._id, user.isAdmin, user.isDemoAdmin);
 
     return successResponse(
       res,
@@ -80,6 +80,9 @@ export const getAllUserController = async (req, res) => {
 export const toggleAdminController = async (req, res) => {
   try {
     const userId = req.params.id;
+    if (req.user?.isDemoAdmin) {
+      return errorResponse(res, 403, "Demo admin has read-only access");
+    }
     const user = await User.findById(userId);
 
     if (!user) {

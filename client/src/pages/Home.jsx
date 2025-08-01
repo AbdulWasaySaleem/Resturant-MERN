@@ -1,7 +1,10 @@
+import React, { lazy, Suspense } from "react";
 import Hero from "../components/Home/Hero";
-import Foods from "../components/Home/Foods";
 import Newsletter from "../components/Home/Newsletter";
 import Features from "../components/Home/Features";
+import Loading from "../components/common/Loading";
+
+const Foods = lazy(() => import("../components/Home/Foods"));
 
 const Home = () => {
   return (
@@ -20,9 +23,11 @@ const Home = () => {
         </section>
 
         {/* Foods Section */}
-        <section className="relative">
-          <Foods />
-        </section>
+        <Suspense fallback={<Loading />}>
+          <section>
+            <Foods />
+          </section>
+        </Suspense>
 
         {/* Newsletter Section */}
         <section className="relative">

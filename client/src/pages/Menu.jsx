@@ -1,5 +1,7 @@
+import { Suspense, lazy } from "react";
 import { foodTypes } from "../data/data.js";
-import FoodCardGrid from "../FoodCardGrid.jsx";
+import Loading from "../components/common/Loading.jsx";
+const FoodCardGrid = lazy(() => import("../FoodCardGrid.jsx"));
 
 const Menu = () => {
   return (
@@ -8,7 +10,9 @@ const Menu = () => {
       id="section"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FoodCardGrid foodTypes={foodTypes} />
+        <Suspense fallback={<Loading/>}>
+          <FoodCardGrid foodTypes={foodTypes} />
+        </Suspense>
       </div>
     </section>
   );

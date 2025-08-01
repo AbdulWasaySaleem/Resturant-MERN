@@ -48,6 +48,11 @@ export const getOneProductController = async (req, res) => {
 // Create a new product
 export const createProductController = async (req, res) => {
   try {
+    // ✅ Block demo admin write
+    if (req.user?.isDemoAdmin) {
+      return errorResponse(res, 403, "Demo admin has read-only access");
+    }
+
     const { title, description, price, review, category } = req.body;
     const imageUrl = req.file?.path;
 
@@ -64,20 +69,19 @@ export const createProductController = async (req, res) => {
       img: imageUrl,
     });
 
-    return successResponse(
-      res,
-      201,
-      newProduct,
-      "Product created successfully"
-    );
+    return successResponse(res, 201, newProduct, "Product created successfully");
   } catch (error) {
     return handleError(res, error, "Product creation failed");
   }
 };
 
+
 // Update product by ID
 export const updateProductController = async (req, res) => {
   try {
+    if (req.user?.isDemoAdmin) {
+      return errorResponse(res, 403, "Demo admin has read-only access");
+    }
     const productId = req.params.id;
     const { title, description, price, review, category } = req.body;
 
@@ -93,6 +97,7 @@ export const updateProductController = async (req, res) => {
     if (req.file?.path) {
       updates.img = req.file.path;
     }
+    
 
     const updatedProduct = await Product.findByIdAndUpdate(productId, updates, {
       new: true,
@@ -117,6 +122,9 @@ export const updateProductController = async (req, res) => {
 export const deleteProductController = async (req, res) => {
   try {
     const productId = req.params.id;
+    if (req.user?.isDemoAdmin) {
+      return errorResponse(res, 403, "Demo admin has read-only access");
+    }
     const deletedProduct = await Product.findByIdAndDelete(productId);
 
     if (!deletedProduct) {

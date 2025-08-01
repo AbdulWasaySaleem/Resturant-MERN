@@ -30,6 +30,7 @@ const HomeAdmin = () => {
   const fetchUserDetails = async () => {
     try {
       const res = await axiosInstance.get("/auth/allusers");
+      console.log(res.data.data);
       setAllUserDetails(res.data.data);
     } catch (error) {
       toast.error(getErrorMessage(error));

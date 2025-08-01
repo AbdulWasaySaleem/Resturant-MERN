@@ -1,11 +1,13 @@
 import { Outlet } from "react-router-dom";
 import Header from "../pages/Header";
 import Footer from "../pages/Footer";
+import DevBanner from "./common/DevBanner";
 
 const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Header */}
+      <DevBanner/>
       <Header />
 
       {/* Main Content */}

@@ -31,7 +31,12 @@ router.post(
 router.get("/alldata", getAllproductController);
 
 //@PATCH || Update Product
-router.patch("/update/:id", verifyTokenAdmin, upload.single("image"), updateProductController);
+router.patch(
+  "/update/:id",
+  verifyTokenAdmin,
+  upload.single("image"),
+  updateProductController
+);
 
 //@DELETE || Delete Product
 router.delete("/:id", verifyTokenAdmin, deleteProductController);
