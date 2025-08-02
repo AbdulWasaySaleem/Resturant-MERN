@@ -30,7 +30,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+    <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
@@ -39,7 +39,6 @@ const Header = () => {
               <img src={logo} height={28} width={28} alt="Logo" />
             </div>
             <Link to={"/"}>
-              {" "}
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 FoodieHub
               </span>
@@ -117,22 +116,36 @@ const Header = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={toggleMenu}
-            className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-          >
-            {isMenuOpen ? (
-              <HiX className="h-6 w-6" />
-            ) : (
-              <HiMenuAlt3 className="h-6 w-6" />
-            )}
-          </button>
+          {/* Mobile Cart + Menu Buttons */}
+          <div className="lg:hidden flex items-center space-x-2">
+            <Link
+              to="/cart"
+              className="relative p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            >
+              <HiShoppingCart className="h-6 w-6" />
+              {products.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {products.length}
+                </span>
+              )}
+            </Link>
+
+            <button
+              onClick={toggleMenu}
+              className="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            >
+              {isMenuOpen ? (
+                <HiX className="h-6 w-6" />
+              ) : (
+                <HiMenuAlt3 className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-lg">
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-lg z-50">
             <div className="px-4 py-6 space-y-4">
               {navLinks.map((link) => (
                 <Link
@@ -147,10 +160,10 @@ const Header = () => {
               {(user?.isAdmin || user?.isDemoAdmin) && (
                 <Link
                   to="/adminpanel"
-                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 >
                   Admin
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               )}
 

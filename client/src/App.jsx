@@ -7,6 +7,7 @@ import ScrollToTop from "./components/common/ScrollToTop.jsx";
 import Loading from "./components/common/Loading.jsx";
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 import NotFound from "./pages/static/NotFound.jsx";
+import DevBanner from "./components/common/DevBanner.jsx";
 
 // Lazy-loaded Components
 const Layout = lazy(() => import("./components/Layout"));
