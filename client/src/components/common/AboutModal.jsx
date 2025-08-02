@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { FiMonitor, FiServer, FiStar, FiGithub } from "react-icons/fi";
 
 const AboutModal = ({ onClose }) => {

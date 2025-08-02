@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import Hero from "../components/Home/Hero";
 import Newsletter from "../components/Home/Newsletter";
 import Features from "../components/Home/Features";

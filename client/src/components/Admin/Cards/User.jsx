@@ -1,6 +1,3 @@
-// src/components/admin/UserCard.jsx
-import React from "react";
-
 const User = ({ user, index, onToggleAdmin }) => {
   return (
     <div

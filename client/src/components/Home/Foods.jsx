@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { HiArrowRight } from "react-icons/hi";
 import { foodTypes } from "../../data/data.js";

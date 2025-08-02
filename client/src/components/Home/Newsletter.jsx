@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { HiMail, HiGift, HiBell, HiCheckCircle } from "react-icons/hi";
 
 const Newsletter = () => {

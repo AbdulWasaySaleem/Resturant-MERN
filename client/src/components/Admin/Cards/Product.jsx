@@ -1,6 +1,3 @@
-// src/components/admin/ProductCard.jsx
-import React from "react";
-
 const Product = ({ product, onDelete, onEdit }) => {
   return (
     <div className="bg-white/70 backdrop-blur-md rounded-lg overflow-hidden shadow-md">
